@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>משחק טריוויה בלשון</title>
+    <style>
+        body {
+            font-family: "Alef", Arial, sans-serif;
+            background: linear-gradient(135deg, #e1f5fe, #fce4ec);
+            background-attachment: unset;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: center;
+            background-image: url('images/whatsapp image 2025-04-16 at 17.04.08_341e5ce7.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+        }
+
+
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #game-container {
+            background: white;
+            margin: 60px auto;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 800px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            border: 4px solid #90caf9;
+            display: none;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .option {
+            background-color: #f0f0f0;
+            border: 2px solid #90caf9;
+            color: #333;
+            padding: 12px 20px;
+            margin: 10px;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: 0.3s;
+            cursor: pointer;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+        }
+
+            .option:hover {
+                background-color: #e3f2fd;
+            }
+
+        .correct {
+            background-color: #c8e6c9 !important;
+            border-color: #66bb6a !important;
+        }
+
+        .wrong {
+            background-color: #ffcdd2 !important;
+            border-color: #e57373 !important;
+        }
+
+        #next-btn {
+            background-color: #64b5f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+            #next-btn:hover {
+                background-color: #42a5f5;
+            }
+
+        #score-box {
+            margin-top: 20px;
+            font-size: 1.3em;
+            color: #444;
+        }
+
+        #start-btn {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            background-color: #2196F3;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+            #start-btn:hover {
+                background-color: #1976D2;
+            }
+
+        #explanation {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #90caf9;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <div id="explanation">
+            <h2>ברוכים הבאים למשחק הטריוויה! בחרו את התשובה הנכונה מכל שאלה, ותראו אם עניתם נכון!</h2>
+            <h2>מגישים:
+            איתמר אספיס, תבור גלבוע, אמיר לוי</h2>
+        </div>
+        <button id="start-btn" onclick="startGame()">התחל משחק</button>
+    </div>
+
+    <div id="game-container">
+        <h2 id="question"></h2>
+        <div id="options"></div>
+        <button id="next-btn" onclick="nextQuestion()" style="display: none;">שאלה הבאה</button>
+        <div id="score-box"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: 'מהו השינוי שקורה בפועל "להתרחץ" כאשר הוא מוטה בגוף ראשון יחיד עבר?',
+                options: ['התרחצתי', 'רחצתי', 'התרחשתי', 'נרחצתי'],
+                correct: 0
+            },
+            {
+                q: 'איזה מהפעלים הבאים שייך לגזרת המרובעים?',
+                options: ['סייע', 'דברר', 'נשא', 'קפא'],
+                correct: 1
+            },
+            {
+                q: 'מה יוצא דופן?',
+                options: ['קפא', 'מחא', 'פלא', 'סקר'],
+                correct: 3
+            },
+            {
+                q: 'מה משותף לפעלים: נבא, ברא, שנא?',
+                options: ['כולם בבניין פיעל', 'כולם בגזרת נל"א', 'כולם שמות פעולה', 'כולם בזמן עתיד'],
+                correct: 1
+            },
+            {
+                q: 'מהו שם הפעולה של הפועל "לסייע"?',
+                options: ['עזרה', 'עזר', 'סיוע', 'מסייע'],
+                correct: 2
+            },
+            {
+                q: 'מהו שם הפועל של הפועל "נשא"?',
+                options: ['נשיאה', 'לשאת', 'נשוי', 'נושאים'],
+                correct: 1
+            },
+            {
+                q: 'מה ההבדל בין הפעלים "מחה" (נלי/ה) ו"מחא" (נל"א)?',
+                options: ['שייכים לאותו בניין', 'משמעות שונה', 'אותה גזרה', 'אותו זמן'],
+                correct: 1
+            },
+            {
+                q: 'מהי צורת הציווי של הפועל "להתראה" (נלי/ה)?',
+                options: ['התריע', 'התראה', 'התראי', 'תתראה'],
+                correct: 1
+            },
+            {
+                q: 'מהי גזרת הפועל "קפא"?',
+                options: ['שלמים', 'נלי/ה', 'מרובעים', 'נל"א'],
+                correct: 3
+            },
+            {
+                q: 'מהו השורש של הפועל "הפרה"?',
+                options: ['פ.ר.י', 'פ.ר.ר', 'פ.ר.ה', 'פ.ו.ר'],
+                correct: 0
+            },
+            {
+                q: 'מהו הזמן של הפועל "נשאתי"?',
+                options: ['עתיד', 'הווה', 'עבר', 'ציווי'],
+                correct: 2
+            },
+            {
+                q: 'באיזה גוף הפועל "שלהבתם"?',
+                options: ['גוף ראשון יחיד', 'גוף שלישי רבים', 'גוף שני רבים', 'גוף ראשון רבים'],
+                correct: 2
+            },
+            {
+                q: 'איזה מהפעלים הבאים הוא בצורת סביל?',
+                options: ['טבול', 'טבל', 'טובל', 'מטביל'],
+                correct: 0
+            },
+            {
+                q: 'מהי צורת הבינוני של "לכתוב"?',
+                options: ['כותב', 'כתוב', 'כתיבה', 'נכתב'],
+                correct: 0
+            },
+            {
+                q: 'מה הגזרה של הפועל "השרה"?',
+                options: ['נלי/ה', 'נל"א', 'שלמים', 'מרובעים'],
+                correct: 0
+            },
+            {
+                q: 'מהו שם הפעולה של "לחתום"?',
+                options: ['חתום', 'חתימה', 'חותם', 'מתחם'],
+                correct: 1
+            }
+        ];
+
+        let current = 0;
+        let score = 0;
+
+        function startGame() {
+            document.getElementById("start-screen").style.display = "none";
+            document.getElementById("game-container").style.display = "block";
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[current];
+            document.getElementById("question").textContent = `שאלה ${current + 1}: ${q.q}`;
+            const optionsDiv = document.getElementById("options");
+            optionsDiv.innerHTML = "";
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement("button");
+                btn.className = "option";
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(i, btn);
+                optionsDiv.appendChild(btn);
+            });
+            document.getElementById("next-btn").style.display = "none";
+        }
+
+        function checkAnswer(index, button) {
+            const q = questions[current];
+            const allButtons = document.querySelectorAll(".option");
+            allButtons.forEach(b => b.disabled = true);
+
+            if (index === q.correct) {
+                button.classList.add("correct");
+                score++;
+            } else {
+                button.classList.add("wrong");
+                allButtons[q.correct].classList.add("correct");
+            }
+            document.getElementById("next-btn").style.display = "inline-block";
+        }
+
+        function nextQuestion() {
+            current++;
+            if (current < questions.length) {
+                showQuestion();
+            } else {
+                document.getElementById("game-container").innerHTML = `
+                                <h2>סיימת את המשחק!</h2>
+                                <p id="score-box">ענית נכון על ${score} מתוך ${questions.length} שאלות.</p>
+                            `;
+            }
+        }
+    </script>
+</body>
+</html>
